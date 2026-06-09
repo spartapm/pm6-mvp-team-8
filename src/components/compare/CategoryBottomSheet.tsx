@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { MAIN_CATEGORIES, SUB_CATEGORIES } from "@/lib/categories";
 import type { MainCategory } from "@/lib/categories";
@@ -8,6 +8,7 @@ import { useMobileFrame } from "@/hooks/use-mobile-frame";
 
 const ENABLED_MAIN: MainCategory = "스킨케어";
 const ENABLED_SUB = "스킨/토너";
+const DEFAULT_MAIN = MAIN_CATEGORIES[0];
 
 type CategoryBottomSheetProps = {
   open: boolean;
@@ -20,14 +21,20 @@ export default function CategoryBottomSheet({
   onClose,
   onSelect,
 }: CategoryBottomSheetProps) {
-  const [selectedMain, setSelectedMain] = useState<MainCategory | null>(null);
+  const [selectedMain, setSelectedMain] =
+    useState<MainCategory>(DEFAULT_MAIN);
   const frame = useMobileFrame();
+
+  useEffect(() => {
+    if (open) {
+      setSelectedMain(DEFAULT_MAIN);
+    }
+  }, [open]);
 
   if (!open || !frame) return null;
 
   const handleSubSelect = (main: MainCategory, sub: string) => {
     onSelect(main, sub);
-    setSelectedMain(null);
     onClose();
   };
 
