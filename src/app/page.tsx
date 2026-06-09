@@ -1,10 +1,29 @@
+import Image from "next/image";
+import BottomNav from "@/components/layout/BottomNav";
+
 export default function HomePage() {
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center bg-white px-6 text-center">
-      <h1 className="text-xl font-bold text-[#1a1a1a]">group8 MVP</h1>
-      <p className="mt-2 text-sm text-[#808080]">
-        데스크탑에서도 모바일 뷰로 표시됩니다.
-      </p>
+    <div className="flex min-h-full flex-col bg-white pb-nav">
+      <div className="flex w-full flex-col">
+        <Image
+          src="/images/home/top.png"
+          alt="화해 홈 상단"
+          width={1170}
+          height={1800}
+          className="h-auto w-full max-w-full"
+          sizes="(max-width: 390px) 100vw, 390px"
+          priority
+        />
+        <Image
+          src="/images/home/bottom.png"
+          alt="화해 홈 카테고리별 판매 BEST"
+          width={1170}
+          height={2400}
+          className="h-auto w-full max-w-full"
+          sizes="(max-width: 390px) 100vw, 390px"
+        />
+      </div>
+      <BottomNav />
     </div>
   );
 }
