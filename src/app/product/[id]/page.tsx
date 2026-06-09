@@ -125,7 +125,7 @@ export default function ProductDetailPage({ params }: PageProps) {
     if (result.added) {
       showToast("상품을 담았어요. 비교함 탭에서 확인할 수 있어요", {
         label: "비교함",
-        href: "/compare",
+        href: `/compare/${result.boxId}`,
       });
     }
   };

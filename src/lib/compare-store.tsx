@@ -143,7 +143,6 @@ export function CompareProvider({ children }: { children: React.ReactNode }) {
       const box = boxes.find((b) => b.id === boxId);
       if (!box) return false;
       if (box.productIds.includes(productId)) return false;
-      if (box.productIds.length >= 3) return false;
 
       setBoxes((prev) =>
         prev.map((b) =>
@@ -207,11 +206,6 @@ export function CompareProvider({ children }: { children: React.ReactNode }) {
               : b,
           ),
         );
-        return { added: false, boxId: targetBox.id };
-      }
-
-      if (targetBox.productIds.length >= 3) {
-        showToast("최대 3개까지 비교할 수 있어요.");
         return { added: false, boxId: targetBox.id };
       }
 

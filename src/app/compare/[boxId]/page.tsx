@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useMemo, useState } from "react";
+import { use, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import BottomNav from "@/components/layout/BottomNav";
 import MobileFixedFooter from "@/components/layout/MobileFixedFooter";
@@ -20,18 +20,10 @@ type PageProps = {
 export default function CompareBoxPage({ params }: PageProps) {
   const { boxId } = use(params);
   const router = useRouter();
-  const { boxes, isLoading, hasError, retryLoad, showToast } = useCompare();
+  const { boxes, isLoading, hasError, retryLoad } = useCompare();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [initialized, setInitialized] = useState(false);
 
   const box = boxes.find((b) => b.id === boxId);
-
-  useEffect(() => {
-    if (box && !initialized) {
-      setSelectedIds([...box.productIds]);
-      setInitialized(true);
-    }
-  }, [box, initialized]);
 
   const products = useMemo(
     () =>
@@ -45,10 +37,6 @@ export default function CompareBoxPage({ params }: PageProps) {
     setSelectedIds((prev) => {
       if (prev.includes(id)) {
         return prev.filter((pid) => pid !== id);
-      }
-      if (prev.length >= 3) {
-        showToast("최대 3개까지 비교할 수 있어요.");
-        return prev;
       }
       return [...prev, id];
     });
@@ -95,15 +83,13 @@ export default function CompareBoxPage({ params }: PageProps) {
     );
   }
 
-  const showAddSlot = products.length < 3;
-
   return (
     <div className="flex min-h-full flex-col bg-white pb-nav-cta">
       <PageHeader
         title={getCompareBoxTitle(box.subCategory)}
         backHref="/compare"
         centered
-        subtitle="비교할 제품을 최대 3개 선택해주세요."
+        subtitle="비교할 제품을 선택해주세요."
       />
 
       <div className="grid grid-cols-3 gap-2 px-4 pt-1">
@@ -115,12 +101,10 @@ export default function CompareBoxPage({ params }: PageProps) {
             onToggle={() => toggleSelect(product.id)}
           />
         ))}
-        {showAddSlot && (
-          <ProductSlot
-            isAddSlot
-            onAdd={() => router.push(`/compare/${boxId}/ranking`)}
-          />
-        )}
+        <ProductSlot
+          isAddSlot
+          onAdd={() => router.push(`/compare/${boxId}/ranking`)}
+        />
       </div>
 
       <MobileFixedFooter bottom={56} className="border-t-0 bg-transparent shadow-none">
