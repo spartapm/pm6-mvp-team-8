@@ -21,7 +21,9 @@ export default function ToastContainer() {
           key={toast.id}
           className="pointer-events-auto flex items-center justify-between gap-3 rounded-xl bg-[#333]/95 px-4 py-3 text-sm text-white shadow-lg"
         >
-          <p className="flex-1">{toast.text}</p>
+          <p className="min-w-0 flex-1 whitespace-nowrap text-xs leading-tight">
+            {toast.text}
+          </p>
           {toast.action ? (
             <Link
               href={toast.action.href}

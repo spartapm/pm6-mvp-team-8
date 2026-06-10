@@ -68,10 +68,10 @@ export default function ProductSlot({
     <button
       type="button"
       onClick={onToggle}
-      className={`relative flex min-h-[196px] flex-col overflow-hidden rounded-lg bg-white text-left transition-colors ${
+      className={`relative flex min-h-[196px] flex-col overflow-hidden rounded-lg border-2 bg-white text-left transition-colors ${
         selected
-          ? "border-2 border-[#48c7cf]"
-          : "border border-dashed border-[#ddd]"
+          ? "border-solid border-[#48c7cf]"
+          : "border-dashed border-[#ddd]"
       }`}
     >
       <SelectionIndicator selected={selected} />
@@ -88,7 +88,7 @@ export default function ProductSlot({
 
       <div className="flex flex-1 flex-col px-2 pb-2.5 pt-1.5">
         <p className="text-[10px] text-[#aaa]">[{product.brand}]</p>
-        <p className="mt-0.5 line-clamp-2 text-[12px] font-semibold leading-snug text-[#1a1a1a]">
+        <p className="mt-0.5 line-clamp-2 min-h-[2.5rem] text-[12px] font-semibold leading-5 text-[#1a1a1a]">
           {product.shortName ?? product.name}
         </p>
 

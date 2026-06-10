@@ -40,7 +40,7 @@ function DetailRow({
 
 export default function ProductDetailPage({ params }: PageProps) {
   const { id } = use(params);
-  const { toggleProductInCategory, isProductInCategoryBox, showToast } =
+  const { addProductToCategory, isProductInCategoryBox, showToast } =
     useCompare();
   const [loading, setLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -115,19 +115,16 @@ export default function ProductDetailPage({ params }: PageProps) {
 
   const handleCompareToggle = () => {
     if (!product) return;
-    setShowTooltip(false);
-    const result = toggleProductInCategory(
+    const result = addProductToCategory(
       product.mainCategory,
       product.subCategory,
       product.id,
     );
-    setInCompare(result.added);
-    if (result.added) {
-      showToast("상품을 담았어요. 비교함 탭에서 확인할 수 있어요", {
-        label: "비교함",
-        href: `/compare/${result.boxId}`,
-      });
-    }
+    setInCompare(true);
+    showToast("상품을 담았어요. 비교함 탭에서 확인하세요.", {
+      label: "비교함",
+      href: `/compare/${result.boxId}`,
+    });
   };
 
   if (hasError) {
@@ -380,16 +377,16 @@ export default function ProductDetailPage({ params }: PageProps) {
       </div>
 
       <div className="relative mt-4 px-4">
-        <div className="relative flex border border-[#eee] rounded-lg overflow-hidden">
+        <div className="relative flex rounded-lg border border-[#eee]">
           <div className="relative flex-1">
             <CompareTooltip
-              visible={showTooltip && !inCompare}
+              visible={showTooltip}
               onClose={() => setShowTooltip(false)}
             />
             <button
               type="button"
               onClick={handleCompareToggle}
-              className={`flex w-full items-center justify-center gap-2 py-3.5 text-sm font-medium ${
+              className={`flex w-full items-center justify-center gap-2 rounded-l-lg py-3.5 text-sm font-medium ${
                 inCompare
                   ? "bg-[#48c7cf] text-white"
                   : "bg-white text-[#666]"

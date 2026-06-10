@@ -14,7 +14,7 @@ export default function CompareTooltip({
   if (!visible) return null;
 
   return (
-    <div className="absolute bottom-full left-0 z-10 mb-2 w-[200px]">
+    <div className="absolute bottom-full left-0 z-20 mb-2 w-[200px]">
       <div className="relative">
         <Image
           src="/images/compare-tooltip.png"

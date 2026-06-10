@@ -26,6 +26,11 @@ type CompareContextValue = {
     subCategory: string,
   ) => CompareBox | undefined;
   addProductToBox: (boxId: string, productId: string) => boolean;
+  addProductToCategory: (
+    mainCategory: string,
+    subCategory: string,
+    productId: string,
+  ) => { added: boolean; boxId: string };
   removeProductFromBox: (boxId: string, productId: string) => void;
   toggleProductInCategory: (
     mainCategory: string,
@@ -142,7 +147,6 @@ export function CompareProvider({ children }: { children: React.ReactNode }) {
     (boxId: string, productId: string): boolean => {
       const box = boxes.find((b) => b.id === boxId);
       if (!box) return false;
-      if (box.productIds.includes(productId)) return false;
 
       setBoxes((prev) =>
         prev.map((b) =>
@@ -152,6 +156,40 @@ export function CompareProvider({ children }: { children: React.ReactNode }) {
         ),
       );
       return true;
+    },
+    [boxes],
+  );
+
+  const addProductToCategory = useCallback(
+    (
+      mainCategory: string,
+      subCategory: string,
+      productId: string,
+    ): { added: boolean; boxId: string } => {
+      let targetBox = boxes.find(
+        (b) =>
+          b.mainCategory === mainCategory && b.subCategory === subCategory,
+      );
+
+      if (!targetBox) {
+        targetBox = {
+          id: createId(),
+          mainCategory,
+          subCategory,
+          productIds: [],
+          createdAt: Date.now(),
+        };
+        setBoxes((prev) => [targetBox!, ...prev]);
+      }
+
+      setBoxes((prev) =>
+        prev.map((b) =>
+          b.id === targetBox!.id
+            ? { ...b, productIds: [...b.productIds, productId] }
+            : b,
+        ),
+      );
+      return { added: true, boxId: targetBox.id };
     },
     [boxes],
   );
@@ -248,6 +286,7 @@ export function CompareProvider({ children }: { children: React.ReactNode }) {
       createBox,
       findBoxByCategory,
       addProductToBox,
+      addProductToCategory,
       removeProductFromBox,
       toggleProductInCategory,
       isProductInAnyBox,
@@ -264,6 +303,7 @@ export function CompareProvider({ children }: { children: React.ReactNode }) {
       createBox,
       findBoxByCategory,
       addProductToBox,
+      addProductToCategory,
       removeProductFromBox,
       toggleProductInCategory,
       isProductInAnyBox,
