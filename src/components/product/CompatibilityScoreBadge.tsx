@@ -3,19 +3,24 @@
 type CompatibilityScoreBadgeProps = {
   score: number;
   collapsed?: boolean;
+  onExpand?: () => void;
   className?: string;
 };
 
 export default function CompatibilityScoreBadge({
   score,
   collapsed = false,
+  onExpand,
   className = "",
 }: CompatibilityScoreBadgeProps) {
   return (
     <button
       type="button"
-      aria-disabled="true"
-      className={`relative cursor-not-allowed overflow-hidden bg-[#5d5f97] shadow-md transition-all duration-300 ease-in-out ${className} ${
+      onClick={collapsed ? onExpand : undefined}
+      aria-disabled={collapsed ? undefined : true}
+      className={`relative overflow-hidden bg-[#5d5f97] shadow-md transition-all duration-300 ease-in-out ${className} ${
+        collapsed ? "cursor-pointer" : "cursor-not-allowed"
+      } ${
         collapsed
           ? "h-[96px] w-[40px] rounded-l-[20px] rounded-r-none"
           : "h-[108px] w-[110px] rounded-[28px]"
@@ -50,7 +55,7 @@ export default function CompatibilityScoreBadge({
           collapsed ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
       >
-        <div className="absolute left-[10px] top-1/2 -translate-y-1/2">
+        <div className="absolute left-[5px] top-1/2 -translate-y-1/2">
           <svg width="10" height="12" viewBox="0 0 10 12" fill="none">
             <path d="M9 1.5L2.5 6 9 10.5V1.5z" fill="white" />
           </svg>

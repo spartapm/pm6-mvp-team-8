@@ -157,10 +157,11 @@ export default function ProductDetailPage({ params }: PageProps) {
   return (
     <div className="relative flex min-h-full flex-col bg-white pb-[calc(4.75rem+var(--safe-area-bottom))]">
       {badgeTop !== null && (
-        <MobileAnchoredRight top={badgeTop} collapsed={scoreCollapsed}>
+        <MobileAnchoredRight top={badgeTop}>
           <CompatibilityScoreBadge
             score={product.compatibilityScore}
             collapsed={scoreCollapsed}
+            onExpand={() => setScoreCollapsed(false)}
           />
         </MobileAnchoredRight>
       )}

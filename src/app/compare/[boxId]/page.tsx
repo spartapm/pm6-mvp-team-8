@@ -21,33 +21,40 @@ export default function CompareBoxPage({ params }: PageProps) {
   const { boxId } = use(params);
   const router = useRouter();
   const { boxes, isLoading, hasError, retryLoad } = useCompare();
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
 
   const box = boxes.find((b) => b.id === boxId);
 
-  const products = useMemo(
+  const entries = useMemo(
     () =>
       box?.productIds
-        .map((id) => getProductById(id))
-        .filter((p): p is NonNullable<typeof p> => !!p) ?? [],
+        .map((productId, index) => {
+          const product = getProductById(productId);
+          return product ? { index, product } : null;
+        })
+        .filter((entry): entry is { index: number; product: NonNullable<ReturnType<typeof getProductById>> } => !!entry) ??
+      [],
     [box],
   );
 
-  const toggleSelect = (id: string) => {
-    setSelectedIds((prev) => {
-      if (prev.includes(id)) {
-        return prev.filter((pid) => pid !== id);
+  const toggleSelect = (index: number) => {
+    setSelectedIndices((prev) => {
+      if (prev.includes(index)) {
+        return prev.filter((i) => i !== index);
       }
-      return [...prev, id];
+      return [...prev, index];
     });
   };
 
-  const canCompare = selectedIds.length >= 2;
+  const canCompare = selectedIndices.length >= 2;
 
   const handleCompare = () => {
-    if (!canCompare) return;
+    if (!canCompare || !box) return;
+    const selectedProductIds = [...selectedIndices]
+      .sort((a, b) => a - b)
+      .map((index) => box.productIds[index]);
     router.push(
-      `/compare/${boxId}/result?selected=${selectedIds.join(",")}`,
+      `/compare/${boxId}/result?selected=${selectedProductIds.join(",")}`,
     );
   };
 
@@ -93,12 +100,12 @@ export default function CompareBoxPage({ params }: PageProps) {
       />
 
       <div className="grid grid-cols-3 gap-2 px-4 pt-1">
-        {products.map((product) => (
+        {entries.map(({ index, product }) => (
           <ProductSlot
-            key={product.id}
+            key={`${boxId}-${index}`}
             product={product}
-            selected={selectedIds.includes(product.id)}
-            onToggle={() => toggleSelect(product.id)}
+            selected={selectedIndices.includes(index)}
+            onToggle={() => toggleSelect(index)}
           />
         ))}
         <ProductSlot

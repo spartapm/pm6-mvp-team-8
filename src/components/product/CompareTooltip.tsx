@@ -14,14 +14,14 @@ export default function CompareTooltip({
   if (!visible) return null;
 
   return (
-    <div className="absolute bottom-full left-0 z-20 mb-2 w-[200px]">
+    <div className="absolute bottom-full left-0 z-20 mb-2 w-[160px]">
       <div className="relative">
         <Image
           src="/images/compare-tooltip.png"
           alt=""
           width={200}
           height={56}
-          className="h-auto w-[200px]"
+          className="h-[52px] w-[160px]"
           aria-hidden
         />
         <p className="absolute left-4 top-3 text-xs font-medium text-white">
