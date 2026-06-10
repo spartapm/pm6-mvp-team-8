@@ -40,7 +40,7 @@ function DetailRow({
 
 export default function ProductDetailPage({ params }: PageProps) {
   const { id } = use(params);
-  const { addProductToCategory, isProductInCategoryBox, showToast } =
+  const { toggleProductInCategory, isProductInCategoryBox, showToast } =
     useCompare();
   const [loading, setLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -115,16 +115,20 @@ export default function ProductDetailPage({ params }: PageProps) {
 
   const handleCompareToggle = () => {
     if (!product) return;
-    const result = addProductToCategory(
+    const result = toggleProductInCategory(
       product.mainCategory,
       product.subCategory,
       product.id,
     );
-    setInCompare(true);
-    showToast("상품을 담았어요. 비교함 탭에서 확인하세요.", {
-      label: "비교함",
-      href: `/compare/${result.boxId}`,
-    });
+    setInCompare(result.added);
+    if (result.added) {
+      showToast("상품을 담았어요. 비교함 탭에서 확인하세요.", {
+        label: "비교함",
+        href: `/compare/${result.boxId}`,
+      });
+    } else {
+      showToast("비교함에서 뺐어요.");
+    }
   };
 
   if (hasError) {

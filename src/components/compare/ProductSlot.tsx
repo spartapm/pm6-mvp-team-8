@@ -7,6 +7,7 @@ import type { Product } from "@/lib/types";
 type ProductSlotProps = {
   product?: Product;
   selected?: boolean;
+  selectionDisabled?: boolean;
   onToggle?: () => void;
   onAdd?: () => void;
   isAddSlot?: boolean;
@@ -39,6 +40,7 @@ function SelectionIndicator({ selected }: { selected: boolean }) {
 export default function ProductSlot({
   product,
   selected = false,
+  selectionDisabled = false,
   onToggle,
   onAdd,
   isAddSlot = false,
@@ -67,12 +69,13 @@ export default function ProductSlot({
   return (
     <button
       type="button"
-      onClick={onToggle}
+      onClick={selectionDisabled ? undefined : onToggle}
+      aria-disabled={selectionDisabled}
       className={`relative flex min-h-[196px] flex-col overflow-hidden rounded-lg border-2 bg-white text-left transition-colors ${
         selected
           ? "border-solid border-[#48c7cf]"
           : "border-dashed border-[#ddd]"
-      }`}
+      } ${selectionDisabled ? "cursor-not-allowed opacity-50" : ""}`}
     >
       <SelectionIndicator selected={selected} />
 

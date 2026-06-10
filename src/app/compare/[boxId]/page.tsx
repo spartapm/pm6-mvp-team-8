@@ -17,10 +17,12 @@ type PageProps = {
   params: Promise<{ boxId: string }>;
 };
 
+const MAX_SELECTED = 3;
+
 export default function CompareBoxPage({ params }: PageProps) {
   const { boxId } = use(params);
   const router = useRouter();
-  const { boxes, isLoading, hasError, retryLoad } = useCompare();
+  const { boxes, isLoading, hasError, retryLoad, showToast } = useCompare();
   const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
 
   const box = boxes.find((b) => b.id === boxId);
@@ -42,6 +44,10 @@ export default function CompareBoxPage({ params }: PageProps) {
       if (prev.includes(index)) {
         return prev.filter((i) => i !== index);
       }
+      if (prev.length >= MAX_SELECTED) {
+        showToast(`최대 ${MAX_SELECTED}개까지 선택할 수 있어요.`);
+        return prev;
+      }
       return [...prev, index];
     });
   };
@@ -49,7 +55,7 @@ export default function CompareBoxPage({ params }: PageProps) {
   const canCompare = selectedIndices.length >= 2;
 
   const handleCompare = () => {
-    if (!canCompare || !box) return;
+    if (!canCompare || !box || selectedIndices.length > MAX_SELECTED) return;
     const selectedProductIds = [...selectedIndices]
       .sort((a, b) => a - b)
       .map((index) => box.productIds[index]);
@@ -96,18 +102,25 @@ export default function CompareBoxPage({ params }: PageProps) {
         title={getCompareBoxTitle(box.subCategory)}
         backHref="/compare"
         centered
-        subtitle="비교할 제품을 선택해주세요."
+        subtitle={`비교할 제품을 최대 ${MAX_SELECTED}개까지 선택해주세요.`}
       />
 
       <div className="grid grid-cols-3 gap-2 px-4 pt-1">
-        {entries.map(({ index, product }) => (
-          <ProductSlot
-            key={`${boxId}-${index}`}
-            product={product}
-            selected={selectedIndices.includes(index)}
-            onToggle={() => toggleSelect(index)}
-          />
-        ))}
+        {entries.map(({ index, product }) => {
+          const selected = selectedIndices.includes(index);
+          const selectionDisabled =
+            !selected && selectedIndices.length >= MAX_SELECTED;
+
+          return (
+            <ProductSlot
+              key={`${boxId}-${index}`}
+              product={product}
+              selected={selected}
+              selectionDisabled={selectionDisabled}
+              onToggle={() => toggleSelect(index)}
+            />
+          );
+        })}
         <ProductSlot
           isAddSlot
           onAdd={() => router.push(`/compare/${boxId}/ranking`)}
